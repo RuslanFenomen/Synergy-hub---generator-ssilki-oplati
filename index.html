@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Генератор ссылки Payme</title>
+<style>
+    :root {
+        --bg: #1e1e1e;
+        --panel: #262626;
+        --border: #333;
+        --text: #e0e0e0;
+        --muted: #9e9e9e;
+        --accent: #7f8cff;
+        --accent-hover: #6c78ff;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        padding: 40px 16px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 720px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 24px;
+    }
+
+    h1 {
+        margin-top: 0;
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    .field {
+        margin-bottom: 16px;
+    }
+
+    label {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        background: #1b1b1b;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+
+    .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        line-height: 1.4;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    button {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    button.secondary {
+        background: #3a3a3a;
+    }
+
+    button:hover {
+        background: var(--accent-hover);
+    }
+
+    button.secondary:hover {
+        background: #4a4a4a;
+    }
+
+    .result {
+        margin-top: 24px;
+    }
+
+    .result textarea {
+        min-height: 110px;
+        font-size: 13px;
+    }
+
+    .footer-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Генератор ссылки Payme</h1>
+
+    <div class="field">
+        <label>Номер договора (contract_number)</label>
+        <input id="contract" placeholder="Например: 103/91">
+    </div>
+
+    <div class="field">
+        <label>ФИО клиента (full_name)</label>
+        <input id="fullname" placeholder="Например: Мирфозилов Акобир">
+    </div>
+
+    <div class="field">
+        <label>Программа обучения (training_program)</label>
+        <select id="program">
+            <option value="1">Разработка игр в Scratch</option>
+            <option value="3">Разработка игр в Roblox Studio</option>
+            <option value="5">Программирование на языке Python</option>
+            <option value="6">Цифровой дизайн</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Назначение платежа (payment_for)</label>
+        <input id="paymentFor" placeholder="Например: за 1 месяц обучения">
+    </div>
+
+    <div class="field">
+        <label>Сумма (amount)</label>
+        <input id="amount" placeholder="Например: 10000000">
+        <div class="hint">
+            ⚠ Важно: указывать сумму **на 2 нуля больше**.<br>
+            Например: чтобы получить <b>100 000</b>, нужно вписать <b>10000000</b>.
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button onclick="generateLink()">Сгенерировать ссылку</button>
+        <button class="secondary" onclick="copyLink()">Скопировать</button>
+        <button class="secondary" onclick="checkLink()">Проверить ссылку</button>
+    </div>
+
+    <div class="result">
+        <label>Итоговая ссылка</label>
+        <textarea id="result" readonly></textarea>
+        <div class="footer-note">
+            Ссылка автоматически кодируется и готова к использованию в Payme
+        </div>
+    </div>
+</div>
+
+<script>
+const BASE_URL = "https://payme.uz/fallback/merchant/?id=67222c5133bcc1cca909a72c";
+
+function generateLink() {
+    const contract = encodeURIComponent(document.getElementById("contract").value.trim());
+    const fullname = encodeURIComponent(document.getElementById("fullname").value.trim());
+    const program = document.getElementById("program").value;
+    const paymentFor = encodeURIComponent(document.getElementById("paymentFor").value.trim());
+    const amount = encodeURIComponent(document.getElementById("amount").value.trim());
+
+    const finalUrl =
+        BASE_URL +
+        "&contract_number=" + contract +
+        "&full_name=" + fullname +
+        "&training_program=" + program +
+        "&payment_for=" + paymentFor +
+        "&amount=" + amount;
+
+    document.getElementById("result").value = finalUrl;
+}
+
+function copyLink() {
+    const textarea = document.getElementById("result");
+    if (!textarea.value) return;
+    textarea.select();
+    document.execCommand("copy");
+    alert("Ссылка скопирована");
+}
+
+function checkLink() {
+    const url = document.getElementById("result").value;
+    if (!url) {
+        alert("Сначала сгенерируйте ссылку");
+        return;
+    }
+    window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
