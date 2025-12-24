@@ -112,13 +112,14 @@ button:hover {
     <h1>🔗 Генератор ссылки Payme</h1>
 
     <label>Номер договора</label>
-    <input id="contract" placeholder="103/91">
+    <input id="contract" placeholder="введите номер договора">
 
     <label>ФИО</label>
-    <input id="fullname" placeholder="Мирфозилов Акобир">
+    <input id="fullname" placeholder="Введите ФИО">
 
     <label>Учебная программа</label>
     <select id="program">
+      <option value="" disabled selected>Выберите программу</option>
       <option value="1">Разработка игр в Scratch</option>
       <option value="3">Разработка игр в Roblox Studio</option>
       <option value="5">Программирование на языке Python</option>
@@ -126,10 +127,10 @@ button:hover {
     </select>
 
     <label>Назначение платежа</label>
-    <input id="paymentFor" placeholder="за 1 месяц обучения">
+    <input id="paymentFor" placeholder="Введите название">
 
     <label>Сумма (без двух нулей)</label>
-    <input id="amount" type="number" placeholder="850000">
+    <input id="amount" type="number" placeholder="Введите сумму">
 
     <button onclick="generate()">Сгенерировать ссылку</button>
 
